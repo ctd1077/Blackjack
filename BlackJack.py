@@ -1,162 +1,114 @@
-#Player class file
-#
+#!/usr/bin/env python3
+# BlackJack Game
+# By: Cambron Deatherage
 
+import pandas as pd
 import random
 
-moves = ['rock', 'paper', 'scissors']
-
+lst = []
+hand = []
 
 class Player():
+    '''Parent Class Player'''
 
     def __init__(self):
 
         self.score = 0
 
-    def move(self):
+    def hand(self):
 
-        return moves[0]
-
-    def learn(self, learn_move):
-
-        pass
-# Parent Player class
+        return hand[0]
 
 
 class HumanPlayer(Player):
-
-    def move(self):
-
-        throw = input('rock, paper, scissors? >')
-
-        while throw != 'rock'and throw != 'paper'and throw != 'scissors':
-            print('Sorry try again')
-            throw = input('rock, paper, scissors? >')
-        return (throw)
+    '''Child Class HumanPlayer'''
+    def hand(self):
+        return None
 
 class Computer(Player):
+    '''Child Class ComputerPlayer'''
+    def hand(self):
 
-    def move(self):
-
-        throw = input('rock, paper, scissors? >')
-
-        while throw != 'rock'and throw != 'paper'and throw != 'scissors':
-            print('Sorry try again')
-            throw = input('rock, paper, scissors? >')
-        return (throw)
-
+        #while throw != 'rock'and throw != 'paper'and throw != 'scissors':
+            #print('Sorry try again')
+            #throw = input('rock, paper, scissors? >')
+        #return (throw)
+        return None
 
 class Game():
-
-    def __init__(self, p2):
+    def __init__(self):
         self.p1 = HumanPlayer()
-        self.p2 = p2
+        self.p2 = ComputerPlayer()
+
+    def new_deck():
+        '''A fucntion to create a new deck of cards'''
+        cards = pd.Series(['2','3','4','5','6','7','8','9','10','J','Q',\
+        'K','A'])
+        Diamonds = pd.Series(cards)
+        Clubs = pd.Series(cards)
+        Spades = pd.Series(cards)
+        Hearts = pd.Series(cards)
+        deck = pd.concat({'Hearts':Hearts,'Spades':Spades,'Clubs':Clubs,\
+        'Diamonds':Diamonds}, axis=1)
+        return deck
+
+    def deal_Card(df, lst):
+        ''' This function deals a card, one card at a time
+        and keeps track of cards played in a deck
+        With out all the Debugging print statements'''
+        played = False
+        while played is False:
+            select_suit = random.choice(suit)
+            card = random.choice(cards)
+            tup = (select_suit, card)
+            if tup in lst:
+                played = False
+                if len(lst) > 51:
+                    played = True
+                    print('Deck is empty')
+                    break
+                continue
+            else:
+                lst.append((select_suit,card))
+                deck.loc[deck[select_suit] == card, select_suit] = None
+                played = True
+                break
+        return select_suit, card
+
+    def points(card):
+        ''' This function decides if the card varible can be dtype of int
+        if so then the point value is the value of the card
+        if it is a str then it's a face card
+        if Ace then 11 points else all other face cards are 10 points'''
+        try:
+            card = int(card)
+            point = int(card)
+            print('This card is an int:')
+            print(card)
+        except:
+            card = str(card)
+            print('This card is a str:')
+            print(card)
+            if card == 'A':
+                point = 11
+                print('This card is an Ace')
+                print(point)
+            else:
+                point = 10
+                print(point)
+        return point
 
     def play_game(self):
-
-        print("Rock Paper Scissors, Go!")
-        for round in range(3):
-            print (f"Round {round}:")
-            self.play_round()
-        if self.p1.score > self.p2.score:
-            print('Player 1 won!')
-        elif self.p1.score < self.p2.score:
-            print('Player 2 won!')
-        else:
-            print('The game was a tie!')
-        print('The final score ' + str(self.p1.score) + ' TO ' +
-              str(self.p2.score))
-# This class starts the game prints information and calls the playround class
-# Also prints out the final score
-
-    def play_single(self):
-        print("Rock Paper Scissors, Go!")
-        print (f"Round 1 of 1:")
-        self.play_round()
-        if self.p1.score > self.p2.score:
-            print('Player 1 won!')
-        elif self.p1.score < self.p2.score:
-            print('Player 2 won!')
-        else:
-            print('The game was a tie!')
-        print('The final score ' + str(self.p1.score) + ' TO ' +
-              str(self.p2.score))
-# This class will play a single round of RPS
-# A copy of play_game w/o for loop
-
-    def play_round(self):
-        move1 = self.p1.move()
-        move2 = self.p2.move()
-        result = Game.play(move1, move2)
-        self.p1.learn(move2)
-        self.p2.learn(move1)
-# This class calls the play class, sets the move 1 and 2 variables
-# then sets the result variable. Plus stores the players move
-
-    def play(self, move1, move2):
-            print(f"You played {move1}")
-            print(f"Opponent played {move2}")
-            if beats(move1, move2):
-                print ("** PLAYER ONE WINS **")
-                print(f"Score: Player 1: {move1}  Player 2: {move2}\n\n")
-                self.p1.score += 1
-                return 1
-            elif beats(move2, move1):
-                print ("** PLAYER TWO WINS **")
-                print(f"Score: Player 1: {move1}  Player 2: {move2}\n\n")
-                self.p2.score += 1
-                return 2
-            else:
-                print ("** It's A TIE **")
-                print(f"Score: Player 1: {move1}  Player 2: {move2}\n\n")
-                return 0
-# This class calls the beats functions
-
-
-def beats(one, two):
-    return ((one == 'rock' and two == 'scissors') or
-            (one == 'scissors' and two == 'paper') or
-            (one == 'paper' and two == 'rock'))
-# I believe beats would be considered a function and not a module because
-# it not part of a class...
-
+        pass
 
 if __name__ == '__main__':
-    answer = [Player(), RandomPlayer(), Cycles(), ReflectPlayer()]
-    p2 = input('Select the RPS game you would like to play or just hit any\
- key and enter for random game: [1]Rock, [2]Random,\
-[3]Reflective, or [4]Cycles: >')
+    answer = input('Welcome to Blackjack!\n Would you like to play a game?\n\
+    Enter [Y]es or [N]o:')
 # answer is a player class list
 # p2 is output input from the user
 
-    while p2 != 1 or p2 != 2 or p2 != 3 or p2 != 4:
-        p2 = random.choice(answer)
+    while answer != 'N':
+        print('Great and good luck!\nGames last for 3 rounds')
+        Game = Game()
+        answer = input('Would you like to play another game:')
         break
-# If the entry is not a specific entry then
-# automatically selects a random choice
-
-    if p2 == '1':
-        p2 = Player()
-    elif p2 == '2':
-        p2 = RandomPlayer()
-    elif p2 == '3':
-        p2 = Cycles()
-    elif p2 == '4':
-        p2 = ReflectPlayer()
-# Set the p2 variable to the correct player class
-
-    rounds = input('Enter for [s]ingle game or [f]ull game: >')
-    Game = Game(p2)
-    while True:
-        if rounds == 's':
-            Game.play_single()
-            break
-        elif rounds == 'f':
-            Game.play_game()
-            break
-        else:
-            print('Sorry try again')
-            rounds = input('Enter 1 for a single\
-             game and 2 for a full game: >')
-# Ask to select the lenght of the game
-# checks to make sure the entry is correct
-# if not ask ask to repeat
